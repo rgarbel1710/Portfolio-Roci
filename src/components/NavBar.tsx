@@ -6,8 +6,9 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 // 1. Array de opciones actualizado para rutas de React Router
 const opciones = [
   { title: 'Home', href: '/', current: false },
-  { title: 'Trabajos', href: '/trabajos', current: false },
+  { title: 'Cursos', href: '/cursos', current: false },
   { title: 'Contacto', href: '/contacto', current: false },
+   { title: 'Formacion', href: '/Formacion', current: false },
 ];
 
 function classNames(...classes: any[]) {
@@ -36,7 +37,7 @@ function NavBar() {
               <Link to="/">
                 <img
                   alt="Logo"
-                  src="https://cdn-icons-png.flaticon.com/512/6839/6839318.png"
+                  src="https://cdn-icons-png.freepik.com/512/17966/17966738.png"
                   className="h-10 w-auto cursor-pointer"
                 />
               </Link>
@@ -76,7 +77,7 @@ function NavBar() {
               <MenuButton className="flex rounded-full bg-gray-800 text-sm focus:outline-none">
                 <img
                   alt="Perfil"
-                  src="https://img.freepik.com/vector-gratis/hacker-que-opera-ilustracion-icono-historieta-ordenador-portatil-concepto-icono-tecnologia-aislado-estilo-dibujos-animados-plana_138676-2387.jpg?w=740"
+                  src="https://i.pinimg.com/736x/fd/3d/17/fd3d176fe202c8a6a644488f1a91c144.jpg"
                   className="size-8 rounded-full"
                 />
               </MenuButton>

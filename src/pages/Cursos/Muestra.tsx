@@ -1,11 +1,12 @@
 import { Estilos } from "./Estilos";
-import type { IServicios } from "@/model/interfaces/IServicios";
+import { useCursos } from "@/hooks/UseCursos/useCursos";
 
 // Definicion de propiedades de entrada
-interface Props {
-    servicios: IServicios[];
-}
-export const Muestra = ({servicios}: Props ) => {
+
+export const Muestra = ( ) => {
+    const { cursos, loading, } = useCursos();
+
+    if (loading) return <div className="text-white bg-slate-950 min-h-screen pt-24 px-6">Cargando servicios...</div>;
     // Muesta el listado de cartas (La informacion de los servicions)
     return(
         // 1 grid Activarlo
@@ -15,11 +16,11 @@ export const Muestra = ({servicios}: Props ) => {
         // 5 bg-slate-950 color de fondo
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 bg-slate-950 p-30">
         {
-            servicios.map((servicio) => (
+            cursos.map((curso) => (
             <Estilos
-            key={servicio.id}
+            key={curso.id}
             // paramentro de entrada del componente ServicioCard, que es un objeto con la informacion de un servicon concreto
-            servicio = {servicio}
+            servicio = {curso}
             />
             ))
         }
