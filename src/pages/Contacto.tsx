@@ -1,80 +1,137 @@
+import { useState } from 'react';
+// 1. Importamos el cliente de Supabase que acabas de crear una carpeta atrás
+import { supabase } from '../supabaseClient'; 
 import { EnvelopeIcon, PhoneIcon, MapPinIcon } from '@heroicons/react/24/outline';
 
 export default function Contacto() {
+  // 2. Creamos los estados para guardar los datos del formulario y los mensajes de éxito/error
+  const [formData, setFormData] = useState({ name: '', lastname: '', email: '', message: '' });
+  const [status, setStatus] = useState<{ type: 'success' | 'error' | null; msg: string }>({ type: null, msg: '' });
+
+  // 3. Función para leer lo que escribe el usuario en tiempo real
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // 4. Función que se ejecuta al pulsar el botón de enviar
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus({ type: null, msg: '' });
+    
+    // Conectamos con tu tabla 'contactos' de Supabase e insertamos los campos
+    const { error } = await supabase
+      .from('contactos')
+      .insert([
+        { 
+          nombre: formData.name, 
+          apellido: formData.lastname, 
+          email: formData.email, 
+          mensaje: formData.message 
+        }
+      ]);
+
+    if (!error) {
+      setStatus({ type: 'success', msg: '¡Mensaje enviado correctamente a la base de datos de Supabase!' });
+      setFormData({ name: '', lastname: '', email: '', message: '' }); // Limpia el formulario
+    } else {
+      setStatus({ type: 'error', msg: 'Hubo un error al conectar con el backend de Supabase.' });
+      console.error(error);
+    }
+  };
+
   return (
-    <div id="contacto" className="relative isolate bg-slate-950 px-6 py-24 sm:py-32 lg:px-8">
+    <div id="contacto" className="relative isolate bg-transparent px-6 py-24 sm:py-32 lg:px-8">
       <div className="mx-auto max-w-7xl">
         
-        <div className="mx-auto max-w-2xl text-center mb-16">
-          <h2 className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">Contacto</h2>
-          <p className="mt-2 text-lg leading-8 text-gray-400">¿Tienes un proyecto en mente? ¡Hablemos!</p>
+        <div className="mx-auto max-w-2xl text-center mb-16 space-y-3">
+          <span className="text-xs font-bold tracking-widest text-pink-500 uppercase bg-pink-100/60 px-3 py-1 rounded-full">
+            ¿Hablamos?
+          </span>
+          <h2 className="text-4xl font-black tracking-tight text-zinc-900 sm:text-5xl uppercase">
+            CON<span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-500">TACTO</span>
+          </h2>
+          <div className="h-1 w-16 bg-gradient-to-r from-pink-500 to-rose-500 mx-auto rounded-full"></div>
+          <p className="mt-4 text-lg leading-8 text-zinc-600">¿Tienes un proyecto en mente? ¡Ponte en contacto conmigo!</p>
         </div>
 
         <div className="grid grid-cols-1 gap-x-12 gap-y-16 lg:grid-cols-2">
           
-          {/* Columna Izquierda: Datos y Mapa */}
+          {/* Datos de contacto y Mapa */}
           <div className="flex flex-col justify-between">
             <div>
-              <h3 className="text-3xl font-bold tracking-tight text-white">Ubicación y Datos</h3>
-              <p className="mt-4 text-lg text-gray-400">
-                Ubicada en Albox, Almería. Siempre abierta a nuevas ideas y colaboraciones, 
-                ya sea con un café de por medio o a través de una pantalla.
+              <h3 className="text-3xl font-black tracking-tight text-zinc-900">Ubicación y Datos</h3>
+              <p className="mt-4 text-base text-zinc-600 leading-relaxed">
+                Ubicada en Albox, Almería. Siempre abierta a nuevas ideas y colaboraciones.
               </p>
 
-              <dl className="mt-10 space-y-6 text-base text-gray-300">
+              <dl className="mt-10 space-y-6 text-base text-zinc-700 font-medium">
                 <div className="flex gap-x-4 items-center">
-                  <MapPinIcon className="h-6 w-6 text-indigo-400" />
+                  <div className="p-2 bg-pink-50 border border-pink-100 rounded-xl text-pink-500">
+                    <MapPinIcon className="h-6 w-6" />
+                  </div>
                   <span>Albox, Almería (España)</span>
                 </div>
                 <div className="flex gap-x-4 items-center">
-                  <PhoneIcon className="h-6 w-6 text-indigo-400" />
-                  <a href="tel:+34722819839" className="hover:text-indigo-400 transition">+34 722 81 98 39</a>
+                  <div className="p-2 bg-pink-50 border border-pink-100 rounded-xl text-pink-500">
+                    <PhoneIcon className="h-6 w-6" />
+                  </div>
+                  <a href="tel:+34722819839" className="hover:text-pink-600 transition-colors">+34 722 81 98 39</a>
                 </div>
                 <div className="flex gap-x-4 items-center">
-                  <EnvelopeIcon className="h-6 w-6 text-indigo-400" />
-                  <a href="mailto:rociogarciabelmonte28@gmail.com" className="hover:text-indigo-400 transition">
+                  <div className="p-2 bg-pink-50 border border-pink-100 rounded-xl text-pink-500">
+                    <EnvelopeIcon className="h-6 w-6" />
+                  </div>
+                  <a href="mailto:rociogarciabelmonte28@gmail.com" className="hover:text-pink-600 transition-colors break-all">
                     rociogarciabelmonte28@gmail.com
                   </a>
                 </div>
               </dl>
             </div>
 
-            {/* MAPA DE ALBOX OPTIMIZADO */}
-            <div className="mt-10 h-80 w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl grayscale hover:grayscale-0 transition-all duration-700">
+            <div className="mt-10 h-80 w-full rounded-3xl overflow-hidden border border-gray-200/60 shadow-lg">
               <iframe
                 title="Mapa Albox"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12711.131102927233!2d-2.1384483!3d37.3879133!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd6fe07f28637777%3A0x403d650630b9680!2s04800%20Albox%2C%20Almer%C3%ADa!5e0!3m2!1ses!2ses!4v1710000000000!5m2!1ses!2ses"
+                src="http://googleusercontent.com/maps.google.com/2"
                 width="100%"
                 height="100%"
-                style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) brightness(95%) contrast(90%)' }}
+                style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
               ></iframe>
             </div>
           </div>
 
-          {/* Columna Derecha: Formulario (con corrección POST) */}
-          <div className="bg-white/5 p-8 rounded-3xl ring-1 ring-white/10 shadow-xl">
-            <form action="https://formspree.io/f/mlgoejyo" method="POST" className="space-y-6">
+          {/* Formulario conectado a Supabase */}
+          <div className="bg-white/70 backdrop-blur-md p-8 rounded-3xl border border-gray-100 shadow-xl">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              
+              {/* Alertas de éxito o error */}
+              {status.type && (
+                <div className={`p-4 rounded-xl text-sm font-semibold ${status.type === 'success' ? 'bg-green-50 text-green-600 border border-green-200' : 'bg-red-50 text-red-600 border border-red-200'}`}>
+                  {status.msg}
+                </div>
+              )}
+
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div>
-                  <label className="text-sm font-medium text-gray-300">Nombre</label>
-                  <input type="text" name="name" required className="mt-2 w-full rounded-lg bg-white/5 border-white/10 text-white focus:ring-2 focus:ring-indigo-500 py-2 px-4" />
+                  <label className="text-sm font-semibold text-zinc-700">Nombre</label>
+                  <input type="text" name="name" value={formData.name} onChange={handleChange} required className="mt-2 w-full rounded-xl bg-gray-50/50 border border-gray-200 text-zinc-800 focus:border-pink-400 focus:ring-2 focus:ring-pink-200 focus:outline-none py-2.5 px-4 transition-all" />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-300">Apellido</label>
-                  <input type="text" name="lastname" className="mt-2 w-full rounded-lg bg-white/5 border-white/10 text-white focus:ring-2 focus:ring-indigo-500 py-2 px-4" />
+                  <label className="text-sm font-semibold text-zinc-700">Apellido</label>
+                  <input type="text" name="lastname" value={formData.lastname} onChange={handleChange} className="mt-2 w-full rounded-xl bg-gray-50/50 border border-gray-200 text-zinc-800 focus:border-pink-400 focus:ring-2 focus:ring-pink-200 focus:outline-none py-2.5 px-4 transition-all" />
                 </div>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-300">Email</label>
-                <input type="email" name="email" required className="mt-2 w-full rounded-lg bg-white/5 border-white/10 text-white focus:ring-2 focus:ring-indigo-500 py-2 px-4" />
+                <label className="text-sm font-semibold text-zinc-700">Email</label>
+                <input type="email" name="email" value={formData.email} onChange={handleChange} required className="mt-2 w-full rounded-xl bg-gray-50/50 border border-gray-200 text-zinc-800 focus:border-pink-400 focus:ring-2 focus:ring-pink-200 focus:outline-none py-2.5 px-4 transition-all" />
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-300">Mensaje</label>
-                <textarea name="message" rows={4} required className="mt-2 w-full rounded-lg bg-white/5 border-white/10 text-white focus:ring-2 focus:ring-indigo-500 py-2 px-4"></textarea>
+                <label className="text-sm font-semibold text-zinc-700">Mensaje</label>
+                <textarea name="message" rows={4} value={formData.message} onChange={handleChange} required className="mt-2 w-full rounded-xl bg-gray-50/50 border border-gray-200 text-zinc-800 focus:border-pink-400 focus:ring-2 focus:ring-pink-200 focus:outline-none py-2.5 px-4 transition-all"></textarea>
               </div>
-              <button type="submit" className="w-full bg-indigo-600 py-3 rounded-lg font-bold text-white hover:bg-indigo-500 shadow-lg shadow-indigo-500/20 transition-all">
+              
+              <button type="submit" className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 py-3.5 rounded-2xl font-bold text-white shadow-md shadow-pink-500/10 transition-all transform hover:-translate-y-0.5 border-none cursor-pointer">
                 Enviar Mensaje
               </button>
             </form>

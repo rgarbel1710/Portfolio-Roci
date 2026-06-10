@@ -1,25 +1,32 @@
 import { useEffect, useState } from 'react';
-import type { ICursos } from '@/model/interfaces/ICursos';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '../../lib/supabase'; // Ajusta la ruta según tu proyecto
+import type { ICursos } from '../../model/interfaces/ICursos';
 
 export const useCursos = () => {
   const [cursos, setCursos] = useState<ICursos[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchCursos = async () => {
-      const { data, error } = await supabase
-        .from('cursos') 
-        .select('*');
+      try {
+        setLoading(true);
+        // Pedimos todos los datos de la tabla 'cursos'
+        const { data, error: supabaseError } = await supabase
+          .from('cursos')
+          .select('*'); 
 
-      if (!error && data) {
-        setCursos(data);
+        if (supabaseError) throw supabaseError;
+        setCursos(data || []);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchCursos();
   }, []);
 
-  return { cursos, loading };
+  return { cursos, loading, error };
 };

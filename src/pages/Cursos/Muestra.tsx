@@ -1,29 +1,49 @@
-import { Estilos } from "./Estilos";
-import { useCursos } from "@/hooks/UseCursos/useCursos";
+// src/pages/Cursos/Muestra.tsx
+import { Estilos as CursoEstilos } from "./Estilos"; 
+import { useCursos } from "../../hooks/UseCursos/useCursos";
+import type { ICursos } from "../../model/interfaces/ICursos";
 
-// Definicion de propiedades de entrada
+export const Muestra = () => {
+  const { cursos, loading, error } = useCursos(); 
 
-export const Muestra = ( ) => {
-    const { cursos, loading, } = useCursos();
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <span className="text-pink-500 animate-pulse text-xl font-bold tracking-widest">CARGANDO CURSOS...</span>
+      </div>
+    );
+  }
 
-    if (loading) return <div className="text-white bg-slate-950 min-h-screen pt-24 px-6">Cargando servicios...</div>;
-    // Muesta el listado de cartas (La informacion de los servicions)
-    return(
-        // 1 grid Activarlo
-        // 2 Grap-6 espacion entre targetas
-        // 3 sm:grid-cols-2 en pantallas pequeñas
-        // 4 lg:grid-col-3 en pantallas gradnes
-        // 5 bg-slate-950 color de fondo
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 bg-slate-950 p-30">
-        {
-            cursos.map((curso) => (
-            <Estilos
-            key={curso.id}
-            // paramentro de entrada del componente ServicioCard, que es un objeto con la informacion de un servicon concreto
-            servicio = {curso}
-            />
-            ))
-        }
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-500 font-semibold">
+        Error al conectar: {error}
+      </div>
+    );
+  }
+
+  return (
+    <div className="pt-28 px-6 pb-20 max-w-7xl mx-auto w-full">
+      {/* Cabecera Estilizada */}
+      <div className="text-center mb-16 space-y-3">
+        <span className="text-xs font-bold tracking-widest text-pink-500 uppercase bg-pink-100/60 px-3 py-1 rounded-full">
+          Formación Oficial
+        </span>
+        <h1 className="text-4xl md:text-5xl font-black text-zinc-900 tracking-tight">
+          MIS CURSOS Y <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-rose-500 to-fucsia-500">CERTIFICACIONES</span>
+        </h1>
+        <div className="h-1 w-20 bg-gradient-to-r from-pink-500 to-rose-500 mx-auto rounded-full"></div>
+      </div>
+
+      {cursos.length === 0 ? (
+        <p className="text-zinc-400 text-center font-medium">No hay cursos disponibles.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {cursos.map((item: ICursos) => (
+            <CursoEstilos key={item.id} curso={item} />
+          ))}
         </div>
-    )
-}
+      )}
+    </div>
+  );
+};

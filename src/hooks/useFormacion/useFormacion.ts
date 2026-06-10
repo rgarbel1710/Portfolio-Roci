@@ -1,10 +1,9 @@
-// src/hooks/useFormacion/useFormacion.ts
 import { useEffect, useState } from 'react';
-import { supabase } from '../../lib/supabase';
+import { supabase } from '../../lib/supabase'; // Asegúrate de que la ruta a tu cliente de Supabase sea la correcta
 import type { IFormacion } from '../../model/interfaces/IFormacion';
 
 export const useFormacion = () => {
-  const [formaciones, setFormaciones] = useState<IFormacion[]>([]);
+  const [formacion, setFormacion] = useState<IFormacion[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -12,12 +11,15 @@ export const useFormacion = () => {
     const fetchFormacion = async () => {
       try {
         setLoading(true);
+        
+        // Aquí le pedimos a Supabase los datos de tu nueva tabla 'formacion'
         const { data, error: supabaseError } = await supabase
-          .from('formacion') // Asegúrate que en Supabase se llame así
+          .from('formacion')
           .select('*');
 
         if (supabaseError) throw supabaseError;
-        setFormaciones(data || []);
+        
+        setFormacion(data || []);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -28,5 +30,5 @@ export const useFormacion = () => {
     fetchFormacion();
   }, []);
 
-  return { formaciones, loading, error };
+  return { formacion, loading, error };
 };

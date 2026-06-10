@@ -1,9 +1,10 @@
+
 export interface IFormacion {
-    id:             number;
-    titulo:         string;
-    centro:         string;
-    fecha:          string;
-    tipo:           string[];
-    descripcion:    string[];
-    icono:          string;
+  id: number;
+  created_at?: string;
+  titulo: string;
+  institucion: string;
+  fecha: string;
+  descripcion: string;
+  imagen_url?: string;
 }
